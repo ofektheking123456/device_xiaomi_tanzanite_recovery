@@ -31,28 +31,15 @@ Features| Fingerprint (under display, optical), accelerometer, gyro, compass, pr
 
 Works:
 
-- [X] ADB
-- [X] Decryption
-- [X] Display
-- [X] Fasbootd
-- [X] Flashing
-- [X] MTP
-- [X] Sideload
-- [X] USB OTG
-- [X] SD Card
-- [X] Touch
+- [ ] ADB
+- [ ] Decryption
+- [ ] Display
+- [ ] Fasbootd
+- [ ] Flashing
+- [ ] MTP
+- [ ] Sideload
+- [ ] USB OTG
+- [ ] SD Card
+- [ ] Touch
 - [ ] Flashlight
-- [X] Vibrator
-
-# Building
-```bash
-source build/envsetup.sh
-lunch twrp_tanzanite-eng
-mka vendorbootimage
-```
-
-## To use it:
-
-```
-fastboot flash vendor_boot out/target/product/tanzanite/vendor_boot.img
-```
+- [ ] Vibrator
