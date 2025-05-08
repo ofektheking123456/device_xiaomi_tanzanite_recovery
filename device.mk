@@ -96,7 +96,6 @@ TARGET_RECOVERY_DEVICE_MODULES += \
 # Security
 PRODUCT_PACKAGES += \
     android.hardware.security.keymint \
-    android.hardware.security.keymint-V3-ndk \
     android.hardware.security.secureclock \
     android.hardware.security.sharedsecret
 
