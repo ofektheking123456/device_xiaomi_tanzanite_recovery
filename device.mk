@@ -83,7 +83,7 @@ PRODUCT_PACKAGES += \
     mtk_plpath_utils.recovery
 
 # Keystore Hal
-PRODUCT_PACKAGES += \
+#PRODUCT_PACKAGES += \
     android.system.keystore2
 
 # Keymaster
@@ -100,6 +100,7 @@ TARGET_RECOVERY_DEVICE_MODULES += \
 # Security
 PRODUCT_PACKAGES += \
     android.hardware.security.keymint \
+    android.hardware.security.keymint-V3-ndk \
     android.hardware.security.secureclock \
     android.hardware.security.sharedsecret
 
