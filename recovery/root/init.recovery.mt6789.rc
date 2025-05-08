@@ -88,6 +88,13 @@ service mtk.plpath.utils.link /system/bin/mtk_plpath_utils
     oneshot
     seclabel u:r:recovery:s0
 
+service keystore2 /system/bin/keystore2 /data/misc/keystore
+    class early_hal
+    user keystore
+    group keystore readproc log
+    task_profiles ProcessCapacityHigh
+    seclabel u:r:recovery:s0
+
 service keymint-mitee /vendor/bin/hw/android.hardware.security.keymint@1.0-service.mitee
     interface android.hardware.keymaster@4.0::IKeymasterDevice default
     interface android.hardware.keymaster@4.1::IKeymasterDevice default
@@ -125,6 +132,7 @@ on property:hwservicemanager.ready=true
     start gatekeeper-1-0
     start keymint-mitee
     start keymaster
+    start keystore2
     start miteelog
     
     
@@ -133,6 +141,7 @@ on property:vendor.sys.listener.registered=true
     start gatekeeper-1-0
     start keymint-mitee
     start keymaster
+    start keystore2
     start miteelog
    
 on property:ro.crypto.state=unsupported
@@ -140,6 +149,7 @@ on property:ro.crypto.state=unsupported
     stop keymint-mitee
     stop gatekeeper-1-0
     stop keymaster-4-1
+    stop keystore2
     stop miteelog
 
 on property:ro.crypto.state=unencrypted
