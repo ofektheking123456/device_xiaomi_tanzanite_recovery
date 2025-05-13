@@ -90,8 +90,8 @@ service mtk.plpath.utils.link /system/bin/mtk_plpath_utils
 
 service keystore2 /system/bin/keystore2 /data/misc/keystore
     class early_hal
-    user keystore
-    group keystore readproc log
+    user root
+    group root readproc keystore
     task_profiles ProcessCapacityHigh
     seclabel u:r:recovery:s0
 
