@@ -78,13 +78,13 @@ PRODUCT_PACKAGES += \
     update_verifier \
     update_engine_sideload
 
-# MTK PlPath Utils
-PRODUCT_PACKAGES += \
-    mtk_plpath_utils.recovery
-
 # Keymaster
 PRODUCT_PACKAGES += \
     android.hardware.keymaster@4.1
+
+# Keystore Hal
+PRODUCT_PACKAGES += \
+    android.system.keystore2
 
 # Additional binaries & libraries needed for recovery
 TARGET_RECOVERY_DEVICE_MODULES += \
@@ -104,10 +104,3 @@ TW_RECOVERY_ADDITIONAL_RELINK_LIBRARY_FILES += \
     $(TARGET_OUT_SHARED_LIBRARIES)/libpuresoftkeymasterdevice.so \
     $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.keymaster@4.1 \
     $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.vibrator-V1-ndk_platform.so \
-
-TW_LOAD_VENDOR_MODULES := "flashlight.ko flashlights-mt6789-o7.ko"
-
-# Vendor ramdisk
-PRODUCT_COPY_FILES += \
-     device/xiaomi/tanzanite/fstab.mt6789:$(TARGET_COPY_OUT_VENDOR_RAMDISK)/first_stage_ramdisk/fstab.mt6789
-
