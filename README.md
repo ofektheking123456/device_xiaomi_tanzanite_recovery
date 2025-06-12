@@ -32,14 +32,13 @@ Features| Fingerprint (under display, optical), accelerometer, gyro, compass, pr
 Works:
 
 - [ ] ADB
-- [ ] Decryption
-- [ ] Display
+- [X] Decryption
+- [X] Display
 - [ ] Fasbootd
-- [ ] Flashing
+- [X] Flashing
 - [ ] MTP
 - [ ] Sideload
 - [ ] USB OTG
-- [ ] SD Card
+- [X] SD Card
 - [ ] Touch
-- [ ] Flashlight
-- [ ] Vibrator
+- [X] Vibrator
