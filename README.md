@@ -1,3 +1,5 @@
+## **FORCE PUSH AND REBASE, YOU HAVE BEEN WARNED!**
+
 TWRP Recovery Tree for Xiaomi Redmi Note 14 4G (Tanzanite)
 ===========================================
 
@@ -32,13 +34,13 @@ Features| Fingerprint (under display, optical), accelerometer, gyro, compass, pr
 Works:
 
 - [ ] ADB
-- [X] Decryption
-- [X] Display
+- [ ] Decryption
+- [ ] Display
 - [ ] Fasbootd
-- [X] Flashing
+- [ ] Flashing
 - [ ] MTP
 - [ ] Sideload
 - [ ] USB OTG
-- [X] SD Card
+- [ ] SD Card
 - [ ] Touch
-- [X] Vibrator
+- [ ] Vibrator
