@@ -235,7 +235,7 @@ TW_SUPPORT_INPUT_AIDL_HAPTICS := true
 # Modules
 TW_LOAD_VENDOR_BOOT_MODULES := true
 TW_LOAD_VENDOR_MODULES_EXCLUDE_GKI := true
-TW_LOAD_VENDOR_MODULES := "flashlight.ko flashlights-mt6789-o7.ko"
+TW_LOAD_VENDOR_MODULES := "flashlight.ko flashlights-mt6789-o7.ko switch_class lct_tp.ko mtk-afe-external.ko stub_scp.ko stub_scp.ko ft3519t.ko"
 
 # Maintainer
 TW_DEVICE_VERSION := wulan17
