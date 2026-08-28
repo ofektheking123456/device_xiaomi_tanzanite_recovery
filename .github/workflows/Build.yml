@@ -1,0 +1,104 @@
+name: Build OrangeFox Recovery - tanzanite
+
+on:
+  workflow_dispatch:
+    inputs:
+      MANIFEST_URL:
+        description: 'OrangeFox Manifest URL'
+        required: true
+        default: 'https://gitlab.com/OrangeFox/sync.git'
+      MANIFEST_BRANCH:
+        description: 'OrangeFox Manifest Branch'
+        required: true
+        default: '12.1'
+      DEVICE_TREE_URL:
+        description: 'Device Tree Repo URL'
+        required: true
+        default: 'https://github.com/Syntax/device_xiaomi_tanzanite_recovery'
+      DEVICE_TREE_BRANCH:
+        description: 'Device Tree Branch'
+        required: true
+        default: 'fox_12.1'
+      DEVICE_PATH:
+        description: 'Device Path'
+        required: true
+        default: 'device/xiaomi/tanzanite'
+      DEVICE_NAME:
+        description: 'Device Codename'
+        required: true
+        default: 'tanzanite'
+      LUNCH_TARGET:
+        description: 'Lunch Combo'
+        required: true
+        default: 'twp_tanzanite-eng'
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+
+    steps:
+    - name: Free Disk Space
+      uses: jlumbroso/free-disk-space@main
+      with:
+        tool-cache: true
+        android: true
+        dotnet: true
+        haskell: true
+        large-packages: true
+        docker-images: true
+        swap-storage: true
+
+    - name: Setup Swap
+      run: |
+        sudo fallocate -l 12G /swapfile
+        sudo chmod 600 /swapfile
+        sudo mkswap /swapfile
+        sudo swapon /swapfile
+
+    - name: Install Build Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          gperf build-essential libssl-dev libxml2-utils xsltproc \
+          unzip fontconfig python3 python-is-python3 repo git \
+          bc ccache zip curl libstdc++6 openjdk-11-jdk
+
+    - name: Git Config
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: Sync OrangeFox Source
+      run: |
+        mkdir -p ~/orangefox
+        cd ~/orangefox
+        repo init -u ${{ github.event.inputs.MANIFEST_URL }} -b ${{ github.event.inputs.MANIFEST_BRANCH }} --depth=1
+        repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune -j$(nproc --all)
+
+    - name: Clone Tanzanite Recovery Tree
+      run: |
+        cd ~/orangefox
+        git clone ${{ github.event.inputs.DEVICE_TREE_URL }} -b ${{ github.event.inputs.DEVICE_TREE_BRANCH }} ${{ github.event.inputs.DEVICE_PATH }}
+
+    - name: Run Build
+      run: |
+        cd ~/orangefox
+        source build/envsetup.sh
+        export ALLOW_MISSING_DEPENDENCIES=true
+        export FOX_BUILD_TYPE="Unofficial"
+        export LC_ALL="C"
+        
+        lunch twp_${{ github.event.inputs.DEVICE_NAME }}-eng || lunch fox_${{ github.event.inputs.DEVICE_NAME }}-ap2a-userdebug || lunch omni_${{ github.event.inputs.DEVICE_NAME }}-userdebug
+        mka recoveryimage -j$(nproc --all)
+
+    - name: Upload Recovery Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: OrangeFox-tanzanite-$(date +%Y%m%d)
+        path: |
+          ~/orangefox/out/target/product/tanzanite/OrangeFox-*.zip
+          ~/orangefox/out/target/product/tanzanite/recovery.img
+          ~/orangefox/out/target/product/tanzanite/boot.img
+          
