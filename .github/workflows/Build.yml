@@ -72,10 +72,11 @@ jobs:
 
     - name: Sync OrangeFox Source
       run: |
-        mkdir -p ~/orangefox
-        cd ~/orangefox
-        repo init -u ${{ github.event.inputs.MANIFEST_URL }} -b ${{ github.event.inputs.MANIFEST_BRANCH }} --depth=1
-        repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune -j$(nproc --all)
+        mkdir -p ~/OrangeFox_sync
+        cd ~/OrangeFox_sync
+        git clone https://gitlab.com/OrangeFox/sync.git sync
+        cd sync
+        ./orangefox_sync.sh --branch 12.1 --path ~/orangefox
 
     - name: Clone Tanzanite Recovery Tree
       run: |
