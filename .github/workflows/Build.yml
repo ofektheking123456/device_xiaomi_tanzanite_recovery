@@ -2,35 +2,6 @@ name: Build OrangeFox Recovery - tanzanite
 
 on:
   workflow_dispatch:
-    inputs:
-      MANIFEST_URL:
-        description: 'OrangeFox Manifest URL'
-        required: true
-        default: 'https://gitlab.com/OrangeFox/sync.git'
-      MANIFEST_BRANCH:
-        description: 'OrangeFox Manifest Branch'
-        required: true
-        default: '12.1'
-      DEVICE_TREE_URL:
-        description: 'Device Tree Repo URL'
-        required: true
-        default: 'https://github.com/Syntax/device_xiaomi_tanzanite_recovery'
-      DEVICE_TREE_BRANCH:
-        description: 'Device Tree Branch'
-        required: true
-        default: 'fox_12.1'
-      DEVICE_PATH:
-        description: 'Device Path'
-        required: true
-        default: 'device/xiaomi/tanzanite'
-      DEVICE_NAME:
-        description: 'Device Codename'
-        required: true
-        default: 'tanzanite'
-      LUNCH_TARGET:
-        description: 'Lunch Combo'
-        required: true
-        default: 'twp_tanzanite-eng'
 
 jobs:
   build:
@@ -76,38 +47,40 @@ jobs:
         cd ~/OrangeFox_sync
         git clone https://gitlab.com/OrangeFox/sync.git sync
         cd sync
-        ./orangefox_sync.sh --branch 12.1 --path ~/orangefox
+        yes | ./orangefox_sync.sh --branch 12.1 --path ~/fox_12.1
 
     - name: Clone Tanzanite Recovery Tree
       run: |
-        cd ~/orangefox
-        git clone https://github.com/DVWorkspaces/device_xiaomi_tanzanite_recovery -b fox_12.1 ${{ github.event.inputs.DEVICE_PATH }}
+        cd ~/fox_12.1
+        git clone https://github.com/DVWorkspaces/device_xiaomi_tanzanite_recovery -b fox_12.1 device/xiaomi/tanzanite
 
     - name: Run Build
       run: |
-        cd ~/orangefox
+        cd ~/fox_12.1
         
-        # Remove vendorsetup.sh if it forces incompatible lunch combos
+        # Remove vendorsetup.sh if present to avoid breaking envsetup
         rm -f device/xiaomi/tanzanite/vendorsetup.sh
         
+        # Load build environment
         source build/envsetup.sh
         
-        # Export required OrangeFox & compilation flags
+        # Required build flags for OrangeFox
         export ALLOW_MISSING_DEPENDENCIES=true
         export FOX_BUILD_TYPE="Unofficial"
         export LC_ALL="C"
         
-        # Try lunch targets matching tanzanite setup
+        # Execute lunch for tanzanite
         lunch twp_tanzanite-eng || lunch fox_tanzanite-ap2a-userdebug || lunch omni_tanzanite-userdebug
         
+        # Compile recovery image
         mka recoveryimage -j$(nproc --all)
 
     - name: Upload Recovery Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: OrangeFox-tanzanite-$(date +%Y%m%d)
+        name: OrangeFox-tanzanite
         path: |
-          ~/orangefox/out/target/product/tanzanite/OrangeFox-*.zip
-          ~/orangefox/out/target/product/tanzanite/recovery.img
-          ~/orangefox/out/target/product/tanzanite/boot.img
+          ~/fox_12.1/out/target/product/tanzanite/OrangeFox-*.zip
+          ~/fox_12.1/out/target/product/tanzanite/recovery.img
+          ~/fox_12.1/out/target/product/tanzanite/boot.img
           
