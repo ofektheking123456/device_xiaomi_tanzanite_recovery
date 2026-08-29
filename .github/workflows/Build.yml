@@ -71,18 +71,16 @@ jobs:
         set -e
         mka recoveryimage -j$(nproc --all)
 
-    - name: Check Build Output
-      if: always()
+    - name: Display Output Files
       run: |
-        ls -la /home/runner/fox_12.1/out/target/product/tanzanite/ || echo "Output directory missing"
+        ls -la /home/runner/fox_12.1/out/target/product/tanzanite/
 
     - name: Upload Recovery Artifacts
       uses: actions/upload-artifact@v4
-      if: always()
       with:
         name: OrangeFox-tanzanite
         path: |
+          /home/runner/fox_12.1/out/target/product/tanzanite/*.img
           /home/runner/fox_12.1/out/target/product/tanzanite/*.zip
-          /home/runner/fox_12.1/out/target/product/tanzanite/recovery.img
-          /home/runner/fox_12.1/out/target/product/tanzanite/boot.img
+          /home/runner/fox_12.1/out/target/product/tanzanite/OrangeFox*.zip
           
