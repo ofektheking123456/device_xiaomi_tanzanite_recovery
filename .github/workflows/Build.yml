@@ -81,7 +81,7 @@ jobs:
     - name: Clone Tanzanite Recovery Tree
       run: |
         cd ~/orangefox
-        git clone ${{ github.event.inputs.DEVICE_TREE_URL }} -b ${{ github.event.inputs.DEVICE_TREE_BRANCH }} ${{ github.event.inputs.DEVICE_PATH }}
+        git clone https://github.com/DVWorkspaces/device_xiaomi_tanzanite_recovery -b fox_12.1 ${{ github.event.inputs.DEVICE_PATH }}
 
     - name: Run Build
       run: |
