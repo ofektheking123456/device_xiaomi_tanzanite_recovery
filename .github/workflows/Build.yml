@@ -58,21 +58,18 @@ jobs:
       run: |
         cd ~/fox_12.1
         
-        # Ensure vendorsetup.sh doesn't fail envsetup
-        rm -f device/xiaomi/tanzanite/vendorsetup.sh
-        
-        # Initialize environment
         source build/envsetup.sh
         
-        # Export build flags required for MTK / tanzanite
+        if [ -f device/xiaomi/tanzanite/vendorsetup.sh ]; then
+          source device/xiaomi/tanzanite/vendorsetup.sh
+        fi
+        
         export ALLOW_MISSING_DEPENDENCIES=true
         export FOX_BUILD_TYPE="Unofficial"
-        export LC_ALL="C"
+        export LC_ALL="C.UTF-8"
         
-        # Try available lunch targets for tanzanite tree configuration
-        lunch twrp_tanzanite-userdebug || lunch twrp_tanzanite-eng || lunch omni_tanzanite-userdebug || lunch fox_tanzanite-userdebug
+        lunch omni_tanzanite-eng || lunch twrp_tanzanite-eng || lunch twrp_tanzanite-userdebug
         
-        # Build recovery image
         mka recoveryimage -j$(nproc --all)
 
     - name: Upload Recovery Artifacts
