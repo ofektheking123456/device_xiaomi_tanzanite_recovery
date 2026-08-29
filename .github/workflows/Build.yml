@@ -57,19 +57,27 @@ jobs:
     - name: Run Build
       run: |
         cd ~/fox_12.1
+        
+        # Ensure vendorsetup.sh doesn't fail envsetup
         rm -f device/xiaomi/tanzanite/vendorsetup.sh
+        
+        # Initialize environment
         source build/envsetup.sh
         
+        # Export build flags required for MTK / tanzanite
         export ALLOW_MISSING_DEPENDENCIES=true
         export FOX_BUILD_TYPE="Unofficial"
         export LC_ALL="C"
         
-        lunch twrp_tanzanite-userdebug || lunch twrp_tanzanite-eng
+        # Try available lunch targets for tanzanite tree configuration
+        lunch twrp_tanzanite-userdebug || lunch twrp_tanzanite-eng || lunch omni_tanzanite-userdebug || lunch fox_tanzanite-userdebug
         
+        # Build recovery image
         mka recoveryimage -j$(nproc --all)
 
     - name: Upload Recovery Artifacts
       uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: OrangeFox-tanzanite
         path: |
