@@ -58,25 +58,32 @@ jobs:
       run: |
         cd ~/fox_12.1
         
+        # Core Build Flags
         export ALLOW_MISSING_DEPENDENCIES=true
         export FOX_BUILD_TYPE="Unofficial"
         export LC_ALL="C"
         export TARGET_DEVICE="tanzanite"
         export TW_DEFAULT_LANGUAGE="en"
+        export FOX_USE_TWRP_RECOVERY_IMAGE_BUILDER=1
         
         set +e
         source build/envsetup.sh
         lunch twrp_tanzanite-eng
         set -e
         
-        # Build recovery image and OrangeFox target bundle
-        mka recoveryimage
-        mka fox_recoveryimage || true
+        # Compile direct binaries
+        mka bootimage recoveryimage vendorbootimage || mka recoveryimage
+        
+        # Trigger OrangeFox zip generator script manually
+        export FOX_VERSION="R12.0"
+        ./vendor/recovery/tools/process_metadata.sh || true
+        ./vendor/fox/tools/finalize_zip.sh || true
 
     - name: Display Output Files
       if: always()
       run: |
         ls -la /home/runner/fox_12.1/out/target/product/tanzanite/ || true
+        ls -la /home/runner/fox_12.1/out/target/product/tanzanite/OrangeFox* || true
 
     - name: Upload Recovery Artifacts
       uses: actions/upload-artifact@v4
@@ -84,8 +91,6 @@ jobs:
       with:
         name: OrangeFox-tanzanite
         path: |
-          /home/runner/fox_12.1/out/target/product/tanzanite/OrangeFox*
-          /home/runner/fox_12.1/out/target/product/tanzanite/recovery.img
-          /home/runner/fox_12.1/out/target/product/tanzanite/boot.img
-          /home/runner/fox_12.1/out/target/product/tanzanite/vendor_boot.img
+          /home/runner/fox_12.1/out/target/product/tanzanite/*.zip
+          /home/runner/fox_12.1/out/target/product/tanzanite/*.img
           
