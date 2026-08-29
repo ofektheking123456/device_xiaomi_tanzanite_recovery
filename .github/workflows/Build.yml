@@ -58,28 +58,31 @@ jobs:
       run: |
         cd ~/fox_12.1
         
+        # Export base OrangeFox environment flags
         export ALLOW_MISSING_DEPENDENCIES=true
         export FOX_BUILD_TYPE="Unofficial"
         export LC_ALL="C"
         export TARGET_DEVICE="tanzanite"
         export TW_DEFAULT_LANGUAGE="en"
         
-        # Source environment and setup device combo
+        # Ignore script exit errors during setup/lunch phase
+        set +e
         source build/envsetup.sh
         
-        # Source device vendorsetup if available
-        [ -f device/xiaomi/tanzanite/vendorsetup.sh ] && source device/xiaomi/tanzanite/vendorsetup.sh
+        # Select product lunch combo
+        lunch tw_tanzanite-eng || lunch omni_tanzanite-eng || lunch twrp_tanzanite-eng || lunch twrp_tanzanite-userdebug
         
-        lunch twrp_tanzanite-eng || lunch omni_tanzanite-eng || lunch twrp_tanzanite-userdebug
+        # Re-enable strict error catching for actual compilation
+        set -e
         
-        # Build recovery image and ZIP package explicitly
+        # Trigger OrangeFox recovery build
         mka recoveryimage
-        mka bootimage || true
+        mka recoveryzip || true
 
     - name: Display Output Files
       if: always()
       run: |
-        ls -la /home/runner/fox_12.1/out/target/product/tanzanite/
+        ls -la /home/runner/fox_12.1/out/target/product/tanzanite/ || true
 
     - name: Upload Recovery Artifacts
       uses: actions/upload-artifact@v4
