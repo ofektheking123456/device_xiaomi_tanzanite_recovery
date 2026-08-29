@@ -64,17 +64,22 @@ jobs:
         export TARGET_DEVICE="tanzanite"
         export TW_DEFAULT_LANGUAGE="en"
         
-        set +e
+        # Source environment and setup device combo
         source build/envsetup.sh
-        lunch omni_tanzanite-eng || lunch twrp_tanzanite-eng
-        set -e
         
-        mka recoveryimage -j$(nproc --all) || mka bootimage -j$(nproc --all)
+        # Source device vendorsetup if available
+        [ -f device/xiaomi/tanzanite/vendorsetup.sh ] && source device/xiaomi/tanzanite/vendorsetup.sh
+        
+        lunch twrp_tanzanite-eng || lunch omni_tanzanite-eng || lunch twrp_tanzanite-userdebug
+        
+        # Build recovery image and ZIP package explicitly
+        mka recoveryimage
+        mka bootimage || true
 
     - name: Display Output Files
       if: always()
       run: |
-        ls -la /home/runner/fox_12.1/out/target/product/tanzanite/ || true
+        ls -la /home/runner/fox_12.1/out/target/product/tanzanite/
 
     - name: Upload Recovery Artifacts
       uses: actions/upload-artifact@v4
@@ -82,7 +87,7 @@ jobs:
       with:
         name: OrangeFox-tanzanite
         path: |
-          /home/runner/fox_12.1/out/target/product/tanzanite/*.img
-          /home/runner/fox_12.1/out/target/product/tanzanite/*.zip
-          /home/runner/fox_12.1/out/target/product/tanzanite/OrangeFox*
+          /home/runner/fox_12.1/out/target/product/tanzanite/OrangeFox*.zip
+          /home/runner/fox_12.1/out/target/product/tanzanite/recovery.img
+          /home/runner/fox_12.1/out/target/product/tanzanite/boot.img
           
