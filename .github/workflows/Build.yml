@@ -58,7 +58,6 @@ jobs:
       run: |
         cd ~/fox_12.1
         
-        # Keep vendorsetup but don't let script errors fail shell setup
         set +e
         source build/envsetup.sh
         
@@ -67,13 +66,15 @@ jobs:
         export LC_ALL="C"
         export TARGET_DEVICE="tanzanite"
         
-        # Select lunch combo using explicit targets defined in device tree
         lunch twrp_tanzanite-eng || lunch twrp_tanzanite-userdebug || lunch omni_tanzanite-eng || lunch omni_tanzanite-userdebug
         
         set -e
-        
-        # Build recovery image
         mka recoveryimage -j$(nproc --all)
+
+    - name: Check Build Output
+      if: always()
+      run: |
+        ls -la /home/runner/fox_12.1/out/target/product/tanzanite/ || echo "Output directory missing"
 
     - name: Upload Recovery Artifacts
       uses: actions/upload-artifact@v4
@@ -81,7 +82,7 @@ jobs:
       with:
         name: OrangeFox-tanzanite
         path: |
-          ~/fox_12.1/out/target/product/tanzanite/OrangeFox-*.zip
-          ~/fox_12.1/out/target/product/tanzanite/recovery.img
-          ~/fox_12.1/out/target/product/tanzanite/boot.img
+          /home/runner/fox_12.1/out/target/product/tanzanite/*.zip
+          /home/runner/fox_12.1/out/target/product/tanzanite/recovery.img
+          /home/runner/fox_12.1/out/target/product/tanzanite/boot.img
           
