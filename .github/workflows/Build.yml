@@ -58,7 +58,8 @@ jobs:
       run: |
         cd ~/fox_12.1
         
-        rm -f device/xiaomi/tanzanite/vendorsetup.sh
+        # Keep vendorsetup but don't let script errors fail shell setup
+        set +e
         source build/envsetup.sh
         
         export ALLOW_MISSING_DEPENDENCIES=true
@@ -66,8 +67,12 @@ jobs:
         export LC_ALL="C"
         export TARGET_DEVICE="tanzanite"
         
-        lunch twrp_tanzanite-userdebug || lunch twrp_tanzanite-eng || lunch omni_tanzanite-eng
+        # Select lunch combo using explicit targets defined in device tree
+        lunch twrp_tanzanite-eng || lunch twrp_tanzanite-userdebug || lunch omni_tanzanite-eng || lunch omni_tanzanite-userdebug
         
+        set -e
+        
+        # Build recovery image
         mka recoveryimage -j$(nproc --all)
 
     - name: Upload Recovery Artifacts
