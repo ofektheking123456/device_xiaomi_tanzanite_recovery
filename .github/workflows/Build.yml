@@ -58,17 +58,15 @@ jobs:
       run: |
         cd ~/fox_12.1
         
+        rm -f device/xiaomi/tanzanite/vendorsetup.sh
         source build/envsetup.sh
-        
-        if [ -f device/xiaomi/tanzanite/vendorsetup.sh ]; then
-          source device/xiaomi/tanzanite/vendorsetup.sh
-        fi
         
         export ALLOW_MISSING_DEPENDENCIES=true
         export FOX_BUILD_TYPE="Unofficial"
-        export LC_ALL="C.UTF-8"
+        export LC_ALL="C"
+        export TARGET_DEVICE="tanzanite"
         
-        lunch omni_tanzanite-eng || lunch twrp_tanzanite-eng || lunch twrp_tanzanite-userdebug
+        lunch twrp_tanzanite-userdebug || lunch twrp_tanzanite-eng || lunch omni_tanzanite-eng
         
         mka recoveryimage -j$(nproc --all)
 
