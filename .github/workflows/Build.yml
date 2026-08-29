@@ -47,7 +47,7 @@ jobs:
         cd ~/OrangeFox_sync
         git clone https://gitlab.com/OrangeFox/sync.git sync
         cd sync
-        yes | ./orangefox_sync.sh --branch 12.1 --path ~/fox_12.1
+        ./orangefox_sync.sh --branch 12.1 --path ~/fox_12.1
 
     - name: Clone Tanzanite Recovery Tree
       run: |
@@ -64,12 +64,12 @@ jobs:
         # Load build environment
         source build/envsetup.sh
         
-        # Required build flags for OrangeFox
+        # Required build flags
         export ALLOW_MISSING_DEPENDENCIES=true
         export FOX_BUILD_TYPE="Unofficial"
         export LC_ALL="C"
         
-        # Execute lunch for tanzanite
+        # Execute lunch
         lunch twp_tanzanite-eng || lunch fox_tanzanite-ap2a-userdebug || lunch omni_tanzanite-userdebug
         
         # Compile recovery image
