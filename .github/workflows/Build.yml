@@ -86,12 +86,20 @@ jobs:
     - name: Run Build
       run: |
         cd ~/orangefox
+        
+        # Remove vendorsetup.sh if it forces incompatible lunch combos
+        rm -f device/xiaomi/tanzanite/vendorsetup.sh
+        
         source build/envsetup.sh
+        
+        # Export required OrangeFox & compilation flags
         export ALLOW_MISSING_DEPENDENCIES=true
         export FOX_BUILD_TYPE="Unofficial"
         export LC_ALL="C"
         
-        lunch twp_${{ github.event.inputs.DEVICE_NAME }}-eng || lunch fox_${{ github.event.inputs.DEVICE_NAME }}-ap2a-userdebug || lunch omni_${{ github.event.inputs.DEVICE_NAME }}-userdebug
+        # Try lunch targets matching tanzanite setup
+        lunch twp_tanzanite-eng || lunch fox_tanzanite-ap2a-userdebug || lunch omni_tanzanite-userdebug
+        
         mka recoveryimage -j$(nproc --all)
 
     - name: Upload Recovery Artifacts
