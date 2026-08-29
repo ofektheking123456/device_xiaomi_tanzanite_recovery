@@ -57,22 +57,15 @@ jobs:
     - name: Run Build
       run: |
         cd ~/fox_12.1
-        
-        # Remove vendorsetup.sh if present to avoid breaking envsetup
         rm -f device/xiaomi/tanzanite/vendorsetup.sh
-        
-        # Load build environment
         source build/envsetup.sh
         
-        # Required build flags
         export ALLOW_MISSING_DEPENDENCIES=true
         export FOX_BUILD_TYPE="Unofficial"
         export LC_ALL="C"
         
-        # Execute lunch
-        lunch twp_tanzanite-eng || lunch fox_tanzanite-ap2a-userdebug || lunch omni_tanzanite-userdebug
+        lunch twrp_tanzanite-userdebug || lunch twrp_tanzanite-eng
         
-        # Compile recovery image
         mka recoveryimage -j$(nproc --all)
 
     - name: Upload Recovery Artifacts
