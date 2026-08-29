@@ -58,29 +58,31 @@ jobs:
       run: |
         cd ~/fox_12.1
         
-        set +e
-        source build/envsetup.sh
-        
         export ALLOW_MISSING_DEPENDENCIES=true
         export FOX_BUILD_TYPE="Unofficial"
         export LC_ALL="C"
         export TARGET_DEVICE="tanzanite"
+        export TW_DEFAULT_LANGUAGE="en"
         
-        lunch twrp_tanzanite-eng || lunch twrp_tanzanite-userdebug || lunch omni_tanzanite-eng || lunch omni_tanzanite-userdebug
-        
+        set +e
+        source build/envsetup.sh
+        lunch omni_tanzanite-eng || lunch twrp_tanzanite-eng
         set -e
-        mka recoveryimage -j$(nproc --all)
+        
+        mka recoveryimage -j$(nproc --all) || mka bootimage -j$(nproc --all)
 
     - name: Display Output Files
+      if: always()
       run: |
-        ls -la /home/runner/fox_12.1/out/target/product/tanzanite/
+        ls -la /home/runner/fox_12.1/out/target/product/tanzanite/ || true
 
     - name: Upload Recovery Artifacts
       uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: OrangeFox-tanzanite
         path: |
           /home/runner/fox_12.1/out/target/product/tanzanite/*.img
           /home/runner/fox_12.1/out/target/product/tanzanite/*.zip
-          /home/runner/fox_12.1/out/target/product/tanzanite/OrangeFox*.zip
+          /home/runner/fox_12.1/out/target/product/tanzanite/OrangeFox*
           
