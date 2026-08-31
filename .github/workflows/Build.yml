@@ -52,13 +52,12 @@ jobs:
     - name: Clone Tanzanite Recovery Tree
       run: |
         cd ~/fox_12.1
-        git clone https://github.com/DVWorkspaces/device_xiaomi_tanzanite_recovery -b fox_12.1 device/xiaomi/tanzanite
+        git clone https://github.com/ofektheking123456/device_xiaomi_tanzanite_recovery -b fox_12.1 device/xiaomi/tanzanite
 
     - name: Run Build
       run: |
         cd ~/fox_12.1
         
-        # Core flags for modern vendor_boot architecture
         export ALLOW_MISSING_DEPENDENCIES=true
         export FOX_BUILD_TYPE="Unofficial"
         export LC_ALL="C"
@@ -68,28 +67,27 @@ jobs:
         export FOX_VENDOR_BOOT_RECOVERY=1
         export BOARD_BOOT_HEADER_VERSION="4"
         export BOARD_MKBOOTIMG_ARGS="--header_version 4"
-
+        
         set +e
         source build/envsetup.sh
         lunch twrp_tanzanite-eng
         set -e
         
-        # Build recovery image structure
-        mka vendorbootimage
+        mka vendorbootimage -j$(nproc)
 
     - name: Package Output Artifacts
       run: |
         cd ~/fox_12.1/out/target/product/tanzanite
         mkdir -p ~/final_artifacts
         
-        cp -f vendor_boot.img ~/final_artifacts/ 2>/dev/null || true
+        cp -f vendor_boot.img ~/final_artifacts/2>/dev/null || true
         
         cd ~/final_artifacts
-        zip -r OrangeFox-tanzanite-vendor_boot.zip ./*
+        zip -r OrangeFox-tanzanite-vendor_boot.zip ./
 
     - name: Upload Recovery Artifacts
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: OrangeFox-tanzanite
+        name: OrangeFox-Tanzanite
         path: ~/final_artifacts/*
