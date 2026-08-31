@@ -226,6 +226,7 @@ TARGET_USES_LOGD := true
 # Modules
 TW_LOAD_VENDOR_BOOT_MODULES := true
 
+# Boot Header & Prebuilt DTB Config
 BOARD_BOOT_HEADER_VERSION := 4
 BOARD_MKBOOTIMG_ARGS += --header_version 4
 BOARD_INCLUDE_DTB_IN_BOOTIMG := true
