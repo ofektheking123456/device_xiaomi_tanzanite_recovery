@@ -225,3 +225,8 @@ TARGET_USES_LOGD := true
 
 # Modules
 TW_LOAD_VENDOR_BOOT_MODULES := true
+
+BOARD_BOOT_HEADER_VERSION := 4
+BOARD_MKBOOTIMG_ARGS += --header_version 4
+BOARD_INCLUDE_DTB_IN_BOOTIMG := true
+TARGET_PREBUILT_DTB := device/xiaomi/tanzanite/prebuilt/dtb
